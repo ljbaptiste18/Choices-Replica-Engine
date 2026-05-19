@@ -137,7 +137,7 @@ screen say(who, what):
     $ speaker_id = "narrator" if who is None else ("center_voice" if who == center_voice else who)
     $ speaker_changed = (speaker_id != who_old)
     $ dialogue_size_old = store.dialogue_size
-    $ box_anim_old = store.box_anim  # snapshot before recalculating
+    $ box_anim_old = store.box_anim
     $ previous_hide_duration = store.hide_pause + store.hide_ease_bounce + store.hide_ease
     $ store.hide_pause = 0.1
 
@@ -190,7 +190,7 @@ screen say(who, what):
         $ box_anim = "in" if speaker_changed else ("grow" if new_rank > old_rank else ("shrink" if new_rank < old_rank else "same"))
 
         $ store.side_pause = 0.12
-        $ store.prev_h_ease = store.hide_ease  # reads OLD hide_ease here
+        $ store.prev_h_ease = store.hide_ease
         $ prev_hide_ease = store.hide_ease
 
         $ store.hide_ease_bounce = 0.05
@@ -444,6 +444,7 @@ transform textbox_hide(h_ease=0.12):
         pause 0.12
         ease h_ease yzoom 0
 
+#nametag transitions
 transform nametag_out(h_ease=0.12):
     on hide:
         pause h_ease + 0.12
@@ -542,7 +543,7 @@ init python:
 
             rend = renpy.Render(total_width, height)
             rend.blit(left_rend, (shift_x, 0))
-            rend.blit(right_rend, (left_width + shift_x, 0))  # <- this is the key fix
+            rend.blit(right_rend, (left_width + shift_x, 0))
 
             return rend
 

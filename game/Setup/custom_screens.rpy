@@ -643,7 +643,7 @@ transform button_bounce:
 
 transform screen_shade_in:
     alpha 0.0
-    linear 0.4 alpha 0.5  # Fades in to 50% darkness
+    linear 0.4 alpha 0.5
 
 transform click_bounce:
     ease 0.08 zoom .9
@@ -953,7 +953,6 @@ screen chooseLI():
 init python:  # saves
     import time
 
-    # --- Force autosave and wait until confirmed written ---
     def force_autosave_sync(timeout=2.0, interval=0.1):
         autosave_name()
         renpy.force_autosave()
@@ -964,11 +963,9 @@ init python:  # saves
                 break
             renpy.pause(interval, hard=True)
 
-    # --- Periodic autosave: saves every N interactions ---
     _interaction_count = 0  # <---- define it here
     _AUTOSAVE_EVERY = 2  # save every 2 interactions
 
-    # Screens or situations to exclude from autosave
     AUTOSAVE_EXCLUDED_SCREENS = {
         "main_menu",
         "save",
@@ -981,26 +978,22 @@ init python:  # saves
         "settings_ui",
         "quick_menu",
         "file_slots"
-        # add other custom screens here
     }
 
-    _autosave_initialized = False  # skip autosave on first interaction after start
+    _autosave_initialized = False
 
     def _periodic_autosave():
         global _interaction_count, _autosave_initialized
 
-        # Skip first interaction after game start
         if not _autosave_initialized:
             _autosave_initialized = True
             return
 
-        # Only autosave in gameplay context (not menu, screen, or rollback)
         if renpy.context()._main_menu:
             return
         current = renpy.current_screen()
         if current in AUTOSAVE_EXCLUDED_SCREENS:
             return
-        # Increment and save if threshold reached
         _interaction_count += 1
         if _interaction_count >= _AUTOSAVE_EVERY:
             _interaction_count = 0
@@ -1102,7 +1095,7 @@ screen confirm(message, yes_action, no_action):
     style_prefix "confirm"
     add "gui/overlay/confirm.png"
     fixed at stretch_ending:
-        xsize 768   ## match your game's resolution
+        xsize 768
         ysize 1360
         ypos 0.5
 
