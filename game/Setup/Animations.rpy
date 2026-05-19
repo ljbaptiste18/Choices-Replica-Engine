@@ -423,7 +423,7 @@ transform sparkle_burst(xpos_start, ypos_start, x_offset, y_offset, duration, sc
     parallel:
         easeout duration xpos xpos_start + x_offset ypos ypos_start + y_offset
     parallel:
-        pause duration * 0.7  # Wait for half the movement duration
+        pause duration * 0.7
         easeout duration * 0.3 alpha 0.0
 
 ##alpha mask

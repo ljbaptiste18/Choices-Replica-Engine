@@ -34,9 +34,6 @@ screen closet():
     modal True
 
     add "images/backgrounds/closet.webp"
-    #if setup_complete:
-    #    textbutton "NOAH's TOES" action ToggleVariable("tester_goodies") xpos 50 ypos 50
-
     add "full rowan"
 
     add "gui/textbox/bottom3menu.png" at (None if PrevScreen else (stretch_show_only if closet_choice_expanded else stretch_hide)):
