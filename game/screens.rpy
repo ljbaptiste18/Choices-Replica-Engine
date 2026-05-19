@@ -814,23 +814,6 @@ screen choice(items):
                                 align (0.42,0.5)
                                 text_align (0.05, 0.48)
 
-
-    elif bottom:
-        window:
-            xalign 0.0
-            xpos 62
-            ypos 985
-            yanchor 0.0
-
-            style_prefix "choice"
-            vbox:
-                style "menu"
-                spacing 0
-                for index, i in enumerate(items):
-                    textbutton i.caption at staggered_dissolve(index):
-                        action i.action
-                        text_align (0.05, 0.5)
-
     else:
         window:
             xalign 0.0
