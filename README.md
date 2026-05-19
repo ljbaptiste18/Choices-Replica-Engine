@@ -4,3 +4,5 @@ To get it to work, download Ren'Py here https://www.renpy.org/
 
 Drag the Template game folder into your local renpy folder. Launch renpy, and you'll be able to play the game.
 I recommend playing through the tutorial while having the code open to get the gist of things. You can also look at Ren'Py documentation for further explanations.
+
+Also, when doing sprite edits, I recommend they all follow the same size of 768 x 1360.
