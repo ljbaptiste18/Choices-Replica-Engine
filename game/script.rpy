@@ -205,7 +205,7 @@ label tutorial_questions_loop:
             devon_no "Go back to character definitions/(character name), where you defined the first image. There, you'll define five speaker names, one for each expression."
             luis_no "Just follow the example to figure it out."
 
-        "Labels and jumps.":
+        "Labels and jumps." if not jumps_done:
             $ jumps_done = True
             devon_no "Labels are scene names that you can jump to. Just make sure the jump is the same name as the label and it'll go there."
             luis_no "You can see this in action with the tutorial_questions_loop. After asking a question, it'll jump back to the beginning of the choice menu, unless you've already asked every question."
