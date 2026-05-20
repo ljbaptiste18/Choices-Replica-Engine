@@ -15,14 +15,19 @@ init -1 python:
         shows name inleft
         """
 
-        if panning_on:
-            if dialogue_old == "right":
-                if who_old == None:
-                    renpy.pause(.15)
-                renpy.show("bg", at_list=[pan_bg_right])
-                renpy.pause(.05)
-                store.dust_xoffset = -50
-                renpy.pause(.05)
+        if panning_on and dialogue_old == "right":
+            if who_old == None:
+                renpy.pause(.15)
+            renpy.show("bg", at_list=[pan_bg_right])
+            renpy.pause(.05)
+            store.dust_xoffset = -50
+            renpy.pause(.05)
+
+        else:
+            if narrator_size_old == "nxl":
+                renpy.pause(store.hide_ease + 0.12)
+            else:
+                renpy.pause(store.hide_ease)
 
         if renpy.config.skipping or renpy.in_rollback():
             renpy.show(name)
@@ -37,14 +42,19 @@ init -1 python:
         FOR NPC
         shows name inright
         """
-        if panning_on:
-            if dialogue_old == "left":
-                if who_old == None:
-                    renpy.pause(.1)
-                renpy.show("bg", at_list=[pan_bg_left])
-                renpy.pause(.05)
-                store.dust_xoffset = 50
-                renpy.pause(.05)
+        if panning_on and dialogue_old == "left":
+            if who_old == None:
+                renpy.pause(.1)
+            renpy.show("bg", at_list=[pan_bg_left])
+            renpy.pause(.05)
+            store.dust_xoffset = 50
+            renpy.pause(.05)
+
+        else:
+            if narrator_size_old == "nxl":
+                renpy.pause(store.hide_ease + 0.12)
+            else:
+                renpy.pause(store.hide_ease)
 
         if renpy.config.skipping or renpy.in_rollback():
             renpy.show(name)

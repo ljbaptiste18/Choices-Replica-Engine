@@ -1,4 +1,4 @@
-﻿################################################################################
+################################################################################
 ## Initialization
 ################################################################################
 
@@ -137,8 +137,8 @@ screen say(who, what):
     $ speaker_id = "narrator" if who is None else ("center_voice" if who == center_voice else who)
     $ speaker_changed = (speaker_id != who_old)
     $ dialogue_size_old = store.dialogue_size
-    $ box_anim_old = store.box_anim
-    $ previous_hide_duration = store.hide_pause + store.hide_ease_bounce + store.hide_ease
+    $ box_anim_old = store.box_anim  # snapshot before recalculating
+    $ previous_hide_duration = store.hide_pause + store.hide_ease
     $ store.hide_pause = 0.1
 
     on "replace" action [
@@ -193,25 +193,50 @@ screen say(who, what):
         $ store.prev_h_ease = store.hide_ease
         $ prev_hide_ease = store.hide_ease
 
-        $ store.hide_ease_bounce = 0.05
         if narrator_size == "ns":
-            $ store.in_ease = 0.12
-            $ store.hide_ease = 0.12
+            $ store.in_ease = 0.11
+            $ store.hide_ease = 0.11
+            $ store.zoom_start = 0
+            $ store.in_zoom = 1.15
         elif narrator_size == "nm":
             $ store.in_ease = 0.12
             $ store.hide_ease = 0.12
+            $ store.zoom_start = 0.7
+            $ store.in_zoom = 1.08
         elif narrator_size == "nl":
-            $ store.in_ease = 0.17
+            if box_anim == "grow":
+                $ store.in_ease = 0.12
+            else:
+                $ store.in_ease = 0.17
             $ store.hide_ease = 0.12
-        else:
-            $ store.in_ease = 0.24
+            $ store.in_zoom = 1.05
+            if narrator_size_old_snap == "ns":
+                $ store.zoom_start = 0.6
+            elif narrator_size_old_snap == "nm":
+                $ store.zoom_start = 0.7
+        else: #nxl
+            if box_anim == "grow":
+                $ store.in_ease = 0.15
+            else:
+                $ store.in_ease = 0.24
             $ store.hide_ease = 0.24
+            $ store.in_zoom = 1.05
+            if narrator_size_old_snap == "ns":
+                $ store.zoom_start = 0.2
+            elif narrator_size_old_snap == "nm":
+                $ store.zoom_start = 0.4
+            elif narrator_size_old_snap == "nl":
+                $ store.zoom_start = 0.6
+            if box_anim == "grow":
+                $ store.in_ease = 0.15
+            else:
+                $ store.in_ease = 0.24
 
         if box_anim == "in":
-            $ store._nar_trans_list = [textbox_in(i_pause=0.05, i_ease=store.in_ease), textbox_hide(h_ease=store.hide_ease)]
+            $ store._nar_trans_list = [textbox_in(i_pause=0.08, i_zoom=store.in_zoom, i_ease=store.in_ease), textbox_hide(h_ease=store.hide_ease)]
             $ store._nametag_trans_list = [nar_tag_in(i_pause=0.05, i_ease=store.in_ease), nametag_out(h_ease=store.hide_ease)]
         elif box_anim == "grow":
-            $ store._nar_trans_list = [textbox_grow(i_ease=store.in_ease), textbox_hide(h_ease=store.hide_ease)]
+            $ store._nar_trans_list = [textbox_grow(z_start=store.zoom_start, i_ease=store.in_ease), textbox_hide(h_ease=store.hide_ease)]
             $ store._nametag_trans_list = [nametag_out(h_ease=store.hide_ease)]
         elif box_anim == "shrink":
             $ store._nar_trans_list = [textbox_shrink, textbox_hide(h_ease=store.hide_ease)]
@@ -263,6 +288,10 @@ screen say(who, what):
         else:
             text what id "what" ypos 565
 
+    elif who == "b3":
+        add "GUI/textbox/bottom textbox.png" at dialogue_in_out
+        text what id "what"
+
     else:
         $ clean = renpy.filter_text_tags(what, allow=['b','i','u','font','size'])
         $ test_text = Text(clean, style="say_dialogue")
@@ -294,30 +323,40 @@ screen say(who, what):
 
         $ store.prev_h_ease = store.hide_ease
 
-        $ store.bounce_zoom = 1.05
-        $ store.hide_ease_bounce = 0.05
-
         if store.dialogue_size == "small":
             $ store.in_ease = .12
             $ store.hide_ease = 0.12
+            $ store.in_zoom = 1.15
         elif store.dialogue_size == "medium":
             $ store.in_ease = 0.14
             $ store.hide_ease = 0.12
+            $ store.in_zoom = 1.15
         elif store.dialogue_size == "large":
             $ store.in_ease = 0.18
             $ store.hide_ease = 0.15
+            $ store.in_zoom = 1.05
         else:
             $ store.in_ease = 0.2
             $ store.hide_ease = 0.15
+            $ store.in_zoom = 1.04
 
 
         $ store.prev_h_ease = store.hide_ease
 
         if box_anim == "in":
-            $ store._trans_list = [textbox_in(i_pause=0.05, i_ease=store.in_ease), textbox_hide(h_ease=store.hide_ease)]
+            $ store._trans_list = [textbox_in(i_pause=0.05, i_zoom=store.in_zoom, i_ease=store.in_ease), textbox_hide(h_ease=store.hide_ease)]
             $ store._nametag_trans = nametag_in(i_pause=0.05 + store.side_pause, i_ease=store.in_ease, h_ease=store.hide_ease)
         elif box_anim == "grow":
-            $ store._trans_list = [textbox_grow(i_pause=0.05, i_ease=store.in_ease), textbox_hide(h_ease=store.hide_ease)]
+            if dialogue_size_old_snap == "small":
+                $ store.zoom_start = 0.2
+            elif dialogue_size_old_snap == "medium":
+                $ store.zoom_start = 0.4
+            elif dialogue_size_old_snap == "large":
+                $ store.zoom_start = 0.6
+            else:
+                $ store.zoom_start = 1
+
+            $ store._trans_list = [textbox_grow(z_start=store.zoom_start, i_ease=store.in_ease), textbox_hide(h_ease=store.hide_ease)]
             $ store._nametag_trans = nametag_out(h_ease=store.hide_ease)
         elif box_anim == "shrink":
             $ store._trans_list = [textbox_shrink, textbox_hide(h_ease=store.hide_ease)]
@@ -414,20 +453,19 @@ screen say(who, what):
                 timer 0.05 action SetScreenVariable("show_text", True)
 
 ##textbox transitions
-transform textbox_in(i_pause=0.0, i_ease=0.2):
+transform textbox_in(i_pause=0.0, i_zoom=1.05, i_ease=0.2):
     on show:
         alpha 0
         pause i_pause + side_pause
         yzoom 0.0
         alpha 1.0
-        ease i_ease yzoom 1.1
+        ease i_ease yzoom i_zoom
         ease 0.1 yzoom 1.0
 
-transform textbox_grow(i_pause=0.0, i_ease=0.2):
+transform textbox_grow(z_start=0.0, i_ease=0.2):
     on show:
         alpha 0
-        pause i_pause + side_pause
-        yzoom 0.0
+        yzoom z_start
         alpha 1.0
         ease i_ease yzoom 1
 
@@ -444,7 +482,6 @@ transform textbox_hide(h_ease=0.12):
         pause 0.12
         ease h_ease yzoom 0
 
-#nametag transitions
 transform nametag_out(h_ease=0.12):
     on hide:
         pause h_ease + 0.12
@@ -679,25 +716,36 @@ init python:
     import math, pygame
 
     class RadialTimer(renpy.Displayable):
-        def __init__(self, duration, image, radius=30, **kwargs):
+        def __init__(self, duration, image, radius=30,
+                     color_dark=(30, 80, 160), color_light=(100, 180, 255),
+                     pulse_speed=1.5, **kwargs):
             super(RadialTimer, self).__init__(**kwargs)
             self.duration = duration
             self.radius = radius
-            self.image = image  ## keep as path string
+            self.image = image
+            self.color_dark = color_dark
+            self.color_light = color_light
+            self.pulse_speed = pulse_speed
 
         def render(self, width, height, st, at):
             size = self.radius * 2
-            progress = max(0.0, 1.0 - st / self.duration)
 
-            ## Load image directly as a pygame surface
+            if store.timer_stopped and store.frozen_timer_progress is not None:
+                progress = store.frozen_timer_progress
+                pulse = store.frozen_timer_pulse
+            else:
+                progress = max(0.0, 1.0 - st / self.duration)
+                pulse = (math.sin(st * self.pulse_speed * math.pi) + 1) / 2
+                store.frozen_timer_progress = progress
+                store.frozen_timer_pulse = pulse
+                renpy.redraw(self, 0)
+
             img_surf = pygame.image.load(renpy.loader.load(self.image))
             img_surf = pygame.transform.scale(img_surf, (size, size))
             img_surf = img_surf.convert_alpha()
 
-            ## Create the pie slice mask
             mask = pygame.Surface((size, size), pygame.SRCALPHA)
             mask.fill((0, 0, 0, 0))
-
             if progress > 0:
                 cx, cy = self.radius, self.radius
                 angle = progress * 360
@@ -711,13 +759,17 @@ init python:
                     ))
                 pygame.draw.polygon(mask, (255, 255, 255, 255), points)
 
-            ## Apply mask
             result = img_surf.copy()
             result.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
 
+            cd, cl = self.color_dark, self.color_light
+            tint = tuple(int(cd[i] + (cl[i] - cd[i]) * pulse) for i in range(3))
+            tint_surf = pygame.Surface((size, size), pygame.SRCALPHA)
+            tint_surf.fill((*tint, 255))
+            result.blit(tint_surf, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
+
             rv = renpy.Render(size, size)
             rv.blit(result, (0, 0))
-            renpy.redraw(self, 0)
             return rv
 
         def visit(self):
@@ -740,6 +792,12 @@ screen choice(items):
     default chosen_index = -1
     default show_timer = False
     default timer_stopped = False
+
+    on "show" action [
+        SetVariable("timer_stopped", False),
+        SetVariable("frozen_timer_progress", None),
+        SetVariable("frozen_timer_pulse", 0.0)
+    ]
 
     if phase == "pulse":
         timer 0.3 action SetScreenVariable("phase", "shrink")
@@ -796,7 +854,7 @@ screen choice(items):
                                     SetScreenVariable("chosen_action", i.action),
                                     SetScreenVariable("chosen_index", index),
                                     SetScreenVariable("phase", "pulse"),
-                                    SetScreenVariable("timer_stopped", True)
+                                    SetVariable("timer_stopped", True)
                                 ]
                                 align (0.42,0.5)
                                 text_align (0.05, 0.48)
@@ -810,7 +868,7 @@ screen choice(items):
                                     SetScreenVariable("chosen_action", i.action),
                                     SetScreenVariable("chosen_index", index),
                                     SetScreenVariable("phase", "pulse"),
-                                    SetScreenVariable("timer_stopped", True)
+                                    SetVariable("timer_stopped", True)
                                 ]
                                 align (0.42,0.5)
                                 text_align (0.05, 0.48)
@@ -869,7 +927,7 @@ screen choice(items):
                                     SetScreenVariable("chosen_action", i.action),
                                     SetScreenVariable("chosen_index", index),
                                     SetScreenVariable("phase", "pulse"),
-                                    SetScreenVariable("timer_stopped", True)
+                                    SetVariable("timer_stopped", True)
                                 ]
                                 align (0.42,0.5)
                                 text_align (0.05, 0.48)
@@ -883,19 +941,19 @@ screen choice(items):
                                     SetScreenVariable("chosen_action", i.action),
                                     SetScreenVariable("chosen_index", index),
                                     SetScreenVariable("phase", "pulse"),
-                                    SetScreenVariable("timer_stopped", True)
+                                    SetVariable("timer_stopped", True)
                                 ]
                                 align (0.42,0.5)
                                 text_align (0.05, 0.48)
 
-    if show_timer and not timer_stopped:
+    if show_timer:
         if (timeout_label is not None) and persistent.timed_choices:
             fixed:
                 if middle:
                     xpos 629
                     ypos 493
                     xysize (80, 64)
-                    add "gui/slider/timeout_empty.png":   ## background circle
+                    add "gui/slider/timeout_empty.png":
                         xalign 0.5
                         yalign 0.5
                         xoffset 10
@@ -908,9 +966,10 @@ screen choice(items):
                     xpos 611
                     ypos 770
                     xysize (80, 64)
-                    add RadialTimer(duration=timeout, image="gui/slider/timeout_full.png", radius=50) at textbox_in
+                    add RadialTimer(duration=timeout, image="gui/slider/timeout_full.png", radius=50, color_dark=(60, 120, 140), color_light=(120, 200, 255), pulse_speed=1.2) at textbox_in
 
-            timer timeout action Jump(timeout_label)
+            if not timer_stopped:
+                timer timeout action Jump(timeout_label)
 
         elif (timeout_short_label is not None) and persistent.timed_choices:
             fixed:
@@ -918,7 +977,7 @@ screen choice(items):
                     xpos 611
                     ypos 770
                     xysize (80, 64)
-                    add "gui/slider/timeout_empty.png":   ## background circle
+                    add "gui/slider/timeout_empty.png":
                         xalign 0.5
                         yalign 0.5
                         xoffset 10
@@ -931,7 +990,7 @@ screen choice(items):
                     xpos 611
                     ypos 770
                     xysize (80, 64)
-                    add RadialTimer(duration=timeout, image="gui/slider/timeout_full.png", radius=50) at textbox_in
+                    add RadialTimer(duration=timeout, image="gui/slider/timeout_full.png", radius=50, color_dark=(60, 120, 140), color_light=(120, 200, 255), pulse_speed=1.2) at textbox_in
 
             timer timeout_short action Jump(timeout_short_label)
 
@@ -1012,9 +1071,6 @@ screen quick_menu():
             yalign 0.98
             spacing 30
 
-            #textbutton _("ILITW Stats") action ShowMenu("ILITWStatsUI") text_outlines [(1, "#000000", 0, 0)]
-            #textbutton _("ILB Stats") action ShowMenu("ILBStatsUI") text_outlines [(1, "#000000", 0, 0)]
-            #textbutton _("ILW Stats") action ShowMenu("StatsUI") text_outlines [(1, "#000000", 0, 0)]
             textbutton _("Back") action Rollback() text_outlines [(1, "#000000", 0, 0)]
 
         #    textbutton _("History") action ShowMenu('history')
@@ -1065,6 +1121,7 @@ screen navigation():
             xalign 0.5
             ypos 645
             spacing 25
+
             if main_menu and lastsave is not None:
                 textbutton _("Continue") action FileLoad(lastsave, slot=True) text_style "mm_button_text"
 
@@ -1072,14 +1129,15 @@ screen navigation():
 
             textbutton _("LOAD") action ShowMenu("load") text_style "mm_button_text"
 
+            textbutton _("BONUS CHAPTERS") action ShowMenu("bonus_chapters") text_style "mm_button_text"
+
+            textbutton _("ACHIEVEMENTS") action ShowMenu("achievements") text_style "mm_button_text"
+
+            textbutton _("GALLERY") action ShowMenu("gallery") text_style "mm_button_text"
+
             textbutton _("PREFERENCES") action ShowMenu("preferences") text_style "mm_button_text"
 
             textbutton _("QUIT") action Quit(confirm=not main_menu) text_style "mm_button_text"
-
-            #imagebutton auto "gui/mm_start_%s.png" xpos 285 ypos 603 focus_mask True action Start()
-            #imagebutton auto "gui/mm_load_%s.png" xpos 325 ypos 660 focus_mask True action ShowMenu("load")
-            #imagebutton auto "gui/mm_pref_%s.png" xpos 275 ypos 700 focus_mask True action ShowMenu("preferences")
-            #imagebutton auto "gui/mm_quit_%s.png" xpos 328 ypos 740 focus_mask True action Quit(confirm=not main_menu)
 
         else:
             ypos 0.33
@@ -1089,11 +1147,8 @@ screen navigation():
             textbutton _("{font=fonts/TTSupermolotNeue-ExtraBold.ttf}SAVE") action ShowMenu("save")
             textbutton _("{font=fonts/TTSupermolotNeue-ExtraBold.ttf}LOAD") action ShowMenu("load")
             textbutton _("{font=fonts/TTSupermolotNeue-ExtraBold.ttf}PREFS") action ShowMenu("preferences")
-            #if tester_mode:
-            textbutton _("{font=fonts/TTSupermolotNeue-ExtraBold.ttf}TRAITS") action ShowMenu("traits")
-            #if tester_mode:
-            textbutton _("{font=fonts/TTSupermolotNeue-ExtraBold.ttf}VARIABLES") action ShowMenu("variables")
             textbutton _("{font=fonts/TTSupermolotNeue-ExtraBold.ttf}HISTORY") action ShowMenu("history")
+            textbutton _("{font=fonts/TTSupermolotNeue-ExtraBold.ttf}ABOUT") action ShowMenu("about")
 
         if _in_replay:
             textbutton _("End Replay") action EndReplay(confirm=True)
@@ -1112,7 +1167,6 @@ screen navigation():
             ## The quit button is banned on iOS and unnecessary on Android and
             ## Web.
             #textbutton _("QUIT") action Quit(confirm=not main_menu)
-
 
 style navigation_button is gui_button
 style navigation_button_text is gui_button_text
@@ -1651,7 +1705,6 @@ screen give_save_name(slotIndex):
                 size 29
 
             text "ENTER SAVE NAME" xoffset -50 yoffset -45 size 33 color "#9a0000" font "Fonts/Sofia Pro Semi Bold Az.otf"
-            #text "Enter save name" xoffset -46 yoffset 5 size 28 xsize 450 at ending_dissolve
 
             imagebutton:
                 auto "gui/input_button_%s.png"
@@ -1729,30 +1782,6 @@ screen preferences():
 
                             action [Preference("display", "toggle"), Function(update_display_mode)]
                             yoffset 10
-
-            null height 35
-
-            hbox:
-                xfill True
-                frame:
-                    xsize 300
-                    background None
-                    padding (0, 0)
-
-                    text "{color=#878c91}{font=fonts/Sofia Pro Black Condensed.ttf}{size=35}NUDITY{/size}{/font} \n{size=29}Show topless sprites."
-
-                frame:
-                    xsize 100
-                    background None
-                    padding (0, 0)
-                    imagebutton at Transform(zoom=0.75):
-                        if persistent.nipples == "censored":
-                            idle "gui/button/button_off.png"
-                        else:
-                            idle "gui/button/button_on.png"
-
-                        action ToggleVariable("persistent.nipples", "censored", "uncensored")
-                        yoffset 10
 
             null height 35
 
