@@ -1129,12 +1129,6 @@ screen navigation():
 
             textbutton _("LOAD") action ShowMenu("load") text_style "mm_button_text"
 
-            textbutton _("BONUS CHAPTERS") action ShowMenu("bonus_chapters") text_style "mm_button_text"
-
-            textbutton _("ACHIEVEMENTS") action ShowMenu("achievements") text_style "mm_button_text"
-
-            textbutton _("GALLERY") action ShowMenu("gallery") text_style "mm_button_text"
-
             textbutton _("PREFERENCES") action ShowMenu("preferences") text_style "mm_button_text"
 
             textbutton _("QUIT") action Quit(confirm=not main_menu) text_style "mm_button_text"
