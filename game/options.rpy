@@ -150,7 +150,7 @@ default preferences.volume.sfx = 0.7
 ## This generally should not be changed, and if it is, should always be a
 ## literal string, not an expression.
 
-define config.save_directory = "ItLivesWithinObsidianCut-170720251114"
+define config.save_directory = "ChoicesTemplateProject-170720251114"
 
 
 ## Icon ########################################################################
