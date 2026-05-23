@@ -1659,11 +1659,11 @@ init python:
     def file_name_has_forbidden_symbols(filename):
         return any(symbols in filename for symbols in ["[", "]", "{", "}"])
 
-    def assign_save_name(name):
-        global current_chapter, Rowan, save_name;
+    #def assign_save_name(name):
+    #    global current_chapter, Rowan, save_name;
 
-        if name == "":
-            save_name = Rowan + " - Ch " + `current_chapter`
+    #    if name == "":
+    #        save_name = Rowan + " - Ch " + `current_chapter`
 
     def autosave_name():
         return "Autosave"
@@ -1847,26 +1847,26 @@ screen preferences():
 
             null height 35
 
-            hbox:
-                xfill True
-                frame:
-                    xsize 300
-                    background None
-                    padding (0, 0)
+        #    hbox:
+        #        xfill True
+        #        frame:
+        #            xsize 300
+        #            background None
+        #            padding (0, 0)
+#
+#                    text "{color=#878c91}{font=fonts/Sofia Pro Black Condensed.ttf}{size=35}AUTOHIDE UI{/size}{/font} \n{size=28}Hide settings icons."
+#                frame:
+#                    xsize 100
+#                    background None
+#                    padding (0, 0)
+#                    imagebutton at Transform(zoom=0.75):
+#                        if settings_autohide:
+#                            idle "gui/button/button_on.png"
+#                        else:
+#                            idle "gui/button/button_off.png"
 
-                    text "{color=#878c91}{font=fonts/Sofia Pro Black Condensed.ttf}{size=35}AUTOHIDE UI{/size}{/font} \n{size=28}Hide settings icons."
-                frame:
-                    xsize 100
-                    background None
-                    padding (0, 0)
-                    imagebutton at Transform(zoom=0.75):
-                        if settings_autohide:
-                            idle "gui/button/button_on.png"
-                        else:
-                            idle "gui/button/button_off.png"
-
-                        action ToggleVariable("settings_autohide", True, False)
-                        yoffset 10
+#                        action ToggleVariable("settings_autohide", True, False)
+#                        yoffset 10
 
             null height 35
 
@@ -2669,10 +2669,6 @@ screen nvl_dialogue(dialogue):
                                     hbox:
                                         spacing 0
                                         xalign 1.0
-                                        if d.who == Rowan:
-                                            add "images/Nerve Icons/nerve[r_nerve_icon].png":
-                                                zoom .7
-                                                yoffset 3
                                         text d.who font "Fonts/Sofia Pro Black Condensed.ttf":
                                             id d.who_id
                                             xoffset -200
